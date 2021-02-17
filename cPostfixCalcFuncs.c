@@ -98,11 +98,12 @@ const char *skipws(const char *s) {
  *   the token type
  */
 int tokenType(const char *s) {
-  if (isDigit(s)){return 0;}
+  if (isDigit(s)){return TOK_INT;}
 
-  
+  char temp = *s;
+  if (temp == 42 || temp == 43 || temp == 45 || temp == 47){return TOK_OP;};
 
-  return 2;
+  return TOK_UNKNOWN;
   
 }
 
@@ -122,7 +123,22 @@ int tokenType(const char *s) {
  *   pointer to the first character in the string that is not a digit
  */
 const char *consumeInt(const char *s, long *pval) {
-  /* TODO: implement */
+  char* s2 = s;
+  while (!(isDigit(*s2))){
+    s2 ++;
+  }
+
+  char number[] = "";
+  while (!(isDigit(*s2))){
+    strcat(number, *s2);
+    s2++;
+  }
+  
+
+  long val = atol(number);
+  pval = &val;
+
+  return s2;
 }
 
 /*
@@ -138,7 +154,18 @@ const char *consumeInt(const char *s, long *pval) {
  *   a pointer to the second character of s
  */
 const char *consumeOp(const char *s, int *op) {
-  /* TODO: implement */
+  
+  char* s2 = s;
+
+  char operator = *s2;
+  int operatorInt = (int)operator;
+
+  s2++;
+
+  op = &operatorInt;
+  return s2;
+
+
 }
 
 /*
@@ -158,7 +185,10 @@ const char *consumeOp(const char *s, int *op) {
  *   nothing
  */
 void stackPush(long stack[], long *count, long val) {
-  /* TODO: implement */
+  
+  
+
+
 }
 
 /*
