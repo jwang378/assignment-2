@@ -186,8 +186,11 @@ const char *consumeOp(const char *s, int *op) {
  */
 void stackPush(long stack[], long *count, long val) {
   
-  
-
+  if (count == 20){
+    fatalError("Stack is full.");
+  }else{
+    stack[(*count)++];
+  }
 
 }
 
@@ -206,7 +209,11 @@ void stackPush(long stack[], long *count, long val) {
  *   the value popped from the stack
  */
 long stackPop(long stack[], long *count) {
-  /* TODO: implement */
+  if (count == 0){
+    fatalError("Stack is Empty.");
+  }else{
+    return stack[--(*count)];
+  }
 }
 
 /*
@@ -221,5 +228,12 @@ long stackPop(long stack[], long *count) {
  *   the result of applying the operator to the operands
  */
 long evalOp(int op, long left, long right) {
-  /* TODO: implement */
+  
+  if (op == 42){return left * right}//*
+  if (op == 43){return left + right}//+
+  if (op == 45){return left - right}//-
+  if (op == 47){return left / right}///
+
+  fatalError("Operation not reached.");
+  return 0;
 }
