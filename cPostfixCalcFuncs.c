@@ -25,6 +25,7 @@ long addPositive(long a, long b) {
  */
 void fatalError(const char *msg) {
   printf("Error :%s", msg);
+  exit(1);
 }
 
 /*
@@ -209,7 +210,14 @@ long evalOp(int op, long left, long right) {
   if (op == 42){return left * right;}//*
   if (op == 43){return left + right;}//+
   if (op == 45){return left - right;}//-
-  if (op == 47){return left / right;}///
+  if (op == 47){
+  
+    if (right == 0){
+      fatalError("Divide by zero.");
+      return 0;
+    }
+    return left / right;
+  }///
 
   fatalError("Operation not reached.");
   return 0;

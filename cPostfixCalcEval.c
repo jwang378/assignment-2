@@ -20,13 +20,12 @@ long eval(const char *s) {
   long numNums = 0;
 
   long*count = &numNums;
-  char* s2;
-  memcpy(s2, s, strlen(s)+1);
+  const char* s2;
+  //memcpy(s2, s, strlen(s)+1);
+  s2 = s;
 
   int firstOp = 0;
   int currentP = 0;
-
-  char* endNum;
 
   while (*s2 != '\0'){
     if (tokenType(s2)==1){
@@ -39,7 +38,8 @@ long eval(const char *s) {
         fatalError("Digit after operator.");
         return 1;
       }
-      long* temp;
+      long tempVal;
+      long* temp = & tempVal;
       s2 = consumeInt(s2, temp);
       stackPush(stack, count, *temp);
     }
@@ -48,7 +48,7 @@ long eval(const char *s) {
 
   int first = 0;
 
-  char* ops = s;
+  const char* ops = s+firstOp;//need ops to be at the first operator in s
 
   while(*count!= 0){
     long right, left;
@@ -66,6 +66,13 @@ long eval(const char *s) {
     skipws(ops);
     
   }
+
+
+  if (numNums > 0){
+    fatalError("Stack not empty. Too many numbers and not enough operations.");
+  }
+
+
 
 
 
