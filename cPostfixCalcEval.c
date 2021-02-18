@@ -13,7 +13,26 @@
  *   the result of evaluating the expression
  */
 long eval(const char *s) {
-  /* TODO: implement */
+  
+  long num = 0;
+  
+  
+
+  while (*s != '\0'){
+    s = skipws(s);
+
+    int tempDigit = 0;
+    if (isDigit(*s)){
+      tempDigit ++;
+      while(isDigit(*(s+tempDigit))){
+        tempDigit++;
+      }
+
+
+    }
+  }
+
+
 
   /* Note: this function should be implemented by calling functions
    * declared in cPostfixCalc.h and defined in cPostfixCalcFuncs.c

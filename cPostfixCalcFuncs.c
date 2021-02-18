@@ -56,7 +56,7 @@ int isSpace(int c) {
  *   1 if c is a digit, 0 otherwise
  */
 int isDigit(int c) {
-  for (int i == 48; i <= 57; i ++){
+  for (int i = 48; i <= 57; i ++){
     if (c == i){return 1;}
   }
   return 0;
@@ -75,8 +75,8 @@ int isDigit(int c) {
  *   is reached
  */
 const char *skipws(const char *s) {
-  while(*s != NULL){
-    char c = int(*s);
+  while(s != NULL){
+    char c = (int)(*s);
     if (isSpace(c)){
       s++;
     }else{
@@ -189,7 +189,7 @@ void stackPush(long stack[], long *count, long val) {
   if (count == 20){
     fatalError("Stack is full.");
   }else{
-    stack[(*count)++];
+    stack[(*count)++] = val;
   }
 
 }
@@ -229,10 +229,10 @@ long stackPop(long stack[], long *count) {
  */
 long evalOp(int op, long left, long right) {
   
-  if (op == 42){return left * right}//*
-  if (op == 43){return left + right}//+
-  if (op == 45){return left - right}//-
-  if (op == 47){return left / right}///
+  if (op == 42){return left * right;}//*
+  if (op == 43){return left + right;}//+
+  if (op == 45){return left - right;}//-
+  if (op == 47){return left / right;}///
 
   fatalError("Operation not reached.");
   return 0;
