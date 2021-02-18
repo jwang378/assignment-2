@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include "cPostfixCalc.h"
 
 /*
@@ -40,7 +41,7 @@ long eval(const char *s) {
       }
       long* temp;
       s2 = consumeInt(s2, temp);
-      stackPush(stack, count, temp);
+      stackPush(stack, count, *temp);
     }
   }
 

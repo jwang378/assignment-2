@@ -124,7 +124,7 @@ int tokenType(const char *s) {
  */
 const char *consumeInt(const char *s, long *pval) {
   char* next;
-  *pval = strtol(s,next,10);
+  *pval = strtol(s,&next,10);
   return next;
 }
 
