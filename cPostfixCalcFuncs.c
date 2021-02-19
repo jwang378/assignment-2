@@ -99,10 +99,13 @@ const char *skipws(const char *s) {
  *   the token type
  */
 int tokenType(const char *s) {
+
   if (isDigit(*s)){return TOK_INT;}
 
   char temp = *s;
-  if (temp == 42 || temp == 43 || temp == 45 || temp == 47){return TOK_OP;};
+  if (temp == 42 || temp == 43 || temp == 45 || temp == 47){
+    return TOK_OP;
+  };
 
   return TOK_UNKNOWN;
   
@@ -227,7 +230,6 @@ long evalOp(int op, long left, long right) {
     return left / right;
   }///
 
-  printf("Currently executing %c\n",op);
   fatalError("Operation not reached.\n");
   return 0;
 }
