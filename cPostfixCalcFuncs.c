@@ -77,8 +77,7 @@ int isDigit(int c) {
  */
 const char *skipws(const char *s) {
   while(s != NULL){
-    char c = (int)(*s);
-    if (isSpace(c)){
+    if (isSpace(*s)){
       s++;
     }else{
       return s;
