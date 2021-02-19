@@ -24,7 +24,7 @@ long addPositive(long a, long b) {
  *   msg - description of the error which occurred
  */
 void fatalError(const char *msg) {
-  printf("Error :%s", msg);
+  printf("Error: %s", msg);
   exit(1);
 }
 
@@ -164,8 +164,8 @@ const char *consumeOp(const char *s, int *op) {
  */
 void stackPush(long stack[], long *count, long val) {
   
-  if (*count == 20){
-    fatalError("Stack is full.");
+  if (*count == 19){
+    fatalError("Stack is full.\n");
   }else{
     stack[(*count)++] = val;
   }
@@ -187,8 +187,8 @@ void stackPush(long stack[], long *count, long val) {
  *   the value popped from the stack
  */
 long stackPop(long stack[], long *count) {
-  if (count == 0){
-    fatalError("Stack is Empty.");
+  if (*count == 0){
+    fatalError("Stack is Empty.\n");
   }else{
     return stack[--(*count)];
   }
@@ -207,18 +207,27 @@ long stackPop(long stack[], long *count) {
  */
 long evalOp(int op, long left, long right) {
   
-  if (op == 42){return left * right;}//*
-  if (op == 43){return left + right;}//+
-  if (op == 45){return left - right;}//-
+  //printf("Executing: %ld %c %ld\n",left, op, right);//test
+
+  if (op == 42){
+    return left * right;
+    }//*
+  if (op == 43){
+    return left + right;
+    }//+
+  if (op == 45){
+    return left - right;
+    }//-
   if (op == 47){
   
     if (right == 0){
-      fatalError("Divide by zero.");
+      fatalError("Divide by zero.\n");
       return 0;
     }
     return left / right;
   }///
 
-  fatalError("Operation not reached.");
+  printf("Currently executing %c\n",op);
+  fatalError("Operation not reached.\n");
   return 0;
 }

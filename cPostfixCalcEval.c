@@ -25,51 +25,63 @@ long eval(const char *s) {
   s2 = s;
 
   int firstOp = 0;
-  int currentP = 0;
+  
+  const char* ops = s;
 
   while (*s2 != '\0'){
-    if (tokenType(s2)==1){
-      firstOp = currentP;
-    }
-    currentP++;
+
     s2 = skipws(s2);
+    if (tokenType(s2)==2){
+      fatalError("Unknown value.\n");
+    }
+    if (tokenType(s2)==1 && firstOp == 0){
+      ops = s2;
+      firstOp ++;    
+    }
+    
+    
     if (isDigit(*s2)){
-      if (firstOp < currentP){
-        fatalError("Digit after operator.");
-        return 1;
+      if (firstOp != 0){
+        fatalError("Digit after operator.\n");
       }
+
       long tempVal;
       long* temp = & tempVal;
       s2 = consumeInt(s2, temp);
       stackPush(stack, count, *temp);
     }
+    
+    s2++;
   }
 
 
-  int first = 0;
 
-  const char* ops = s+firstOp;//need ops to be at the first operator in s
-
-  while(*count!= 0){
-    long right, left;
-    if (first == 0){
-      right = stackPop(stack, count);
-      left = stackPop(stack, count);
-
-      num = evalOp(*ops, left, right);
-    }else{
-      right = num;
-      left = stackPop(stack, count);
-      num = evalOp(*ops, left, right);
+  if (*count <= 1){
+    if (tokenType(ops) == 1){
+      if (numNums == 1){
+        fatalError("Too many operators.\n");
+      }else{
+        fatalError("Something has gone horribly wrong.\n");
+      }
     }
-
-    skipws(ops);
+  }
+  
+  
+  while(*count > 1){
+    ops = skipws(ops);  
+    long right, left;
+    right = stackPop(stack, count);
+    left = stackPop(stack, count);
+    num = evalOp(*ops, left, right);
+    stackPush(stack, count, num);
+    ops++;
     
   }
 
+  num = stackPop(stack, count);
 
   if (numNums > 0){
-    fatalError("Stack not empty. Too many numbers and not enough operations.");
+    fatalError("Too many values left in stack.\n");
   }
 
 
@@ -80,5 +92,6 @@ long eval(const char *s) {
   /* Note: this function should be implemented by calling functions
    * declared in cPostfixCalc.h and defined in cPostfixCalcFuncs.c
    */
+  
   return num;
 }

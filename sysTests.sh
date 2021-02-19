@@ -44,8 +44,20 @@ expect_error() {
 expect 5 '2 3 +'
 expect 42 '6 7 *'
 expect 42 '6 6 6 6 6 6 6 + + + + + +'
+expect 42 '6 6 6 6 6 6 6 ++++++'
+expect 42 '6  6   6    6     6       6       6 + +  +   +    +     +'
+expect 5 '7 2 -'
+expect 27 '3 4 5 + *'
+expect -12 '2 3 4 5 +-*'
+expect 109 '4 15 7 * +'
+expect_error '1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 ******************'
 expect_error '2 2'
 expect_error '1 *'
+expect_error ''
+expect_error '1 0 /'
+expect_error 'a b c'
+expect_error '1 2 3 a b c / + - *'
+expect_error '1 + 1 + 1'
 # TODO: add more tests...
 
 #######################################################################
