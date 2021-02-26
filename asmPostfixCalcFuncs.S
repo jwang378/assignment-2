@@ -55,8 +55,16 @@ addPositive:
  */
 	.globl fatalError
 fatalError:
-	/* TODO: implement */
+	
 	/* note that this function should not return */
+
+	subq $8, %rsp //stack align
+	call printf //calls printf, should be called by another function that has already moved the message to rdi
+	
+	movq $1, %rdi //move 1 to first parameter
+
+	addq $8, %rsp //stack align
+	call exit //exit with 1
 	ret
 
 /*
@@ -74,7 +82,29 @@ fatalError:
  */
 	.globl isSpace
 isSpace:
-	/* TODO: implement */
+
+	subq $8, %rsp //stack align
+
+	movq $9, %r10 //move 9 to r10
+	movq $32, %r11 //move 32 to r11
+	//9 and 32 are space values so these are needed to compare
+
+	cmpq %rdi, %r10 //compare parameter and r10
+	je .LSecondCompare //if it's space, compare second space
+
+	jmp .LIsNotZero //hits this if comparison fails
+.LSecondCompare:
+	cmpq %rd1, %r11 //compare parameter and r10
+	je .LIsZero //definitely a space
+	jmp .LIsNotZero //hits this if comparison fails
+.LIsZero:
+	movq $1, %rax //because it's a space we move 1 to rax to return
+	jmp .LReturnCompare //return because assignment is finished
+.LIsNotZero:
+	movq $0, %rax //not a space so we move 0 to rax to return
+	jmp .LReturnCompare //return because assignment is finished
+.LReturnCompare:
+	addq $8, %rsp //stack align
 	ret
 
 /*
@@ -89,7 +119,30 @@ isSpace:
  */
 	.globl isDigit
 isDigit:
-	/* TODO: implement */
+
+	subq $8, %rsp //stack align
+
+	movq $48, %r10 //move the first digit ascii value to r10
+
+	jmp .Ltop //start the loop
+
+.Ltop:
+	cmp %r10, %rdi //compare digit and input
+	je. LIsDigit //if digit jump to digit
+
+	addq %r10, $1 //increment ascii value by 1 for next digit
+	cmp $57, %r10 //compare to last digit
+	je. LIsNotDigit //jump to not digit if all digits have been compared
+
+	jmp. Ltop//return to beginning of loop
+.LIsDigit:
+	movq $1, %rax //put 1 in return
+	jmp .LReturnCompare//return
+.LIsNotDigit:
+	movq $0, %rax //put 0 in return
+	jmp .LReturnCompare//return
+.LReturnCompare:	
+	addq $8, %rsp //stack align
 	ret
 
 /*
