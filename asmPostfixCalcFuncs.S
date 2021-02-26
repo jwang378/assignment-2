@@ -86,10 +86,10 @@ isSpace:
 	movq $9, %r10 //move 9 to r10
 	movq $32, %r11 //move 32 to r11
 	//9 and 32 are space values so these are needed to compare
-	cmpq %rdi, %r10 //compare parameter and r10
+	cmpb %dil, %r10b //compare parameter and r10
 	je .LIsZero //if it's space, return
 
-	cmpq %rdi, %r11 //compare parameter and r10
+	cmpb %dil, %r11b //compare parameter and r10
 	je .LIsZero // if it's space, return
 	
 	jmp .LIsNotZero //hits this if comparison fails
@@ -160,28 +160,28 @@ skipws:
 	subq $8, %rsp //stack align
 
 	movq $0, %r10 //null to r10
-	movq %rdi, %r11 //move parameter to 11
+	movq %rdi, %r9 //move parameter to r9
 
 .LSkipWSLoop:
-	cmpq %r11, %r10 //compare pointer and null
+	cmpq %r9, %r10 //compare pointer and null
 	je .LWhiteSpaceStringNull //if null pointer, jump to null return
 
-	movq (%r11), %r8 //move dereferenced pointer value to r8
-	movq %r8, %rdi //move r8 value to rdi so it can be used as a parameter
+	movq (%r9), %rdi //move address stored in r9 to rdi
+	
 
 	call isSpace //call isspace to see if dereferenced pointer is a space
-	cmpq $1, %rax //compare returned value and 1 to see if it's a space
-	jne .LSpacesSkipped //value is not a space so spaces have been skipped
+	cmpq $0, %rax //compare returned value and 1 to see if it's a space
+	je .LSpacesSkipped //value is not a space so spaces have been skipped
 	
-	addq $1, %r11 //increment pointer by 1
+	addq $1, %r9 //increment pointer by 1
 
 	jmp .LSkipWSLoop //back to top of loop
 .LWhiteSpaceStringNull:
-	movq 0, %rax//return null
+	movq 0, %rax //return null
 	jmp .LReturnSkipws //return
 
 .LSpacesSkipped:
-	movq %r11, %rax //return pointer to non space char
+	movq %r9, %rax //return pointer to non space char
 	jmp .LReturnSkipws
 
 .LReturnSkipws:
@@ -201,7 +201,41 @@ skipws:
  */
 	.globl tokenType
 tokenType:
-	/* TODO: implement */
+	
+	subq $8, %rsp //align stack
+
+	movq (%rdi), %r10 //move dereferenced parameter to r10
+
+	movq %r10, %rdi //move dereferenced value to be a parameter
+	call isDigit //call isdigit using dereferenced char pointer as parameter
+	cmpq $1, %rax //compare returned value and 1
+	je .LDigitToken //jump to digit token
+
+	cmpq $42, %r10 //compare dereferenced value to operators
+	je .LOpToken //jump to operator token return if it's an operator
+	cmpq $43, %r10
+	je .LOpToken
+	cmpq $45, %r10
+	je .LOpToken
+	cmpq $47, %r10
+	je .LOpToken
+
+	jmp .LUToken //if it hits nothing, then it must be unknown
+
+.LDigitToken:
+	movq $TOK_INT, %rax //move digit token to return
+	jmp .LtokenTypeReturn //return
+
+.LOpToken:
+	movq $TOK_OP, %rax //move op token to return
+	jmp .LtokenTypeReturn
+
+.LUToken:
+	movq $TOK_UNKNOWN, %rax //move unknown token to return
+	jmp .LtokenTypeReturn
+
+.LtokenTypeReturn:
+	addq $8, %rsp //align stack
 	ret
 
 /*
