@@ -156,7 +156,36 @@ isDigit:
  */
 	.globl skipws
 skipws:
-	/* TODO: implement */
+	
+	subq $8, %rsp //stack align
+
+	movq $0, %r10 //null to r10
+	movq %rdi, %r11 //move parameter to 11
+
+.LSkipWSLoop:
+	cmpq %r11, %r10 //compare pointer and null
+	je .LWhiteSpaceStringNull //if null pointer, jump to null return
+
+	movq (%r11), %r8 //move dereferenced pointer value to r8
+	movq %r8, %rdi //move r8 value to rdi so it can be used as a parameter
+
+	call isSpace //call isspace to see if dereferenced pointer is a space
+	cmpq $1, %rax //compare returned value and 1 to see if it's a space
+	jne .LSpacesSkipped //value is not a space so spaces have been skipped
+	
+	addq $1, %r11 //increment pointer by 1
+
+	jmp .LSkipWSLoop //back to top of loop
+.LWhiteSpaceStringNull:
+	movq 0, %rax//return null
+	jmp .LReturnSkipws //return
+
+.LSpacesSkipped:
+	movq %r11, %rax //return pointer to non space char
+	jmp .LReturnSkipws
+
+.LReturnSkipws:
+	addq $8, %rsp //stack align
 	ret
 
 /*
