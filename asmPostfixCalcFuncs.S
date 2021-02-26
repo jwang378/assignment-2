@@ -121,20 +121,23 @@ isDigit:
 
 	subq $8, %rsp //stack align
 	movq $48, %r10 //move the first digit ascii value to r10
-	jmp .Ltop //start the loop
+
 .Ltop:
 	cmpq %r10, %rdi //compare digit and input
 	je .LIsDigit //if digit jump to digit
-	addq $1, %r10 //increment ascii value by 1 for next digit
-	cmpq $57, %r10 //compare to last digit
-	je .LIsNotDigit //jump to not digit if all digits have been compared
-	jmp .Ltop//return to beginning of loop
+	addq $1, %r10 //increment ascii value by 1 for compared digits
+	cmpq $58, %r10 //compare to 57, the last digit
+	je .LIsNotDigit //if 58 then not digit
+	jmp .Ltop //back to beginning of loop
+
 .LIsDigit:
 	movq $1, %rax //put 1 in return
 	jmp .LReturnCompareDigit//return
+
 .LIsNotDigit:
 	movq $0, %rax //put 0 in return
 	jmp .LReturnCompareDigit//return
+
 .LReturnCompareDigit:	
 	addq $8, %rsp //stack align
 	ret
