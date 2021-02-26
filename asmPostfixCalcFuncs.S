@@ -82,28 +82,27 @@ fatalError:
  */
 	.globl isSpace
 isSpace:
-
 	subq $8, %rsp //stack align
-
 	movq $9, %r10 //move 9 to r10
 	movq $32, %r11 //move 32 to r11
 	//9 and 32 are space values so these are needed to compare
-
 	cmpq %rdi, %r10 //compare parameter and r10
-	je .LSecondCompare //if it's space, compare second space
+	je .LIsZero //if it's space, return
 
+	cmpq %rdi, %r11 //compare parameter and r10
+	je .LIsZero // if it's space, return
+	
 	jmp .LIsNotZero //hits this if comparison fails
-.LSecondCompare:
-	cmpq %rd1, %r11 //compare parameter and r10
-	je .LIsZero //definitely a space
-	jmp .LIsNotZero //hits this if comparison fails
+	
 .LIsZero:
 	movq $1, %rax //because it's a space we move 1 to rax to return
-	jmp .LReturnCompare //return because assignment is finished
+	jmp .LReturnCompareSpace //return because assignment is finished
+	
 .LIsNotZero:
 	movq $0, %rax //not a space so we move 0 to rax to return
-	jmp .LReturnCompare //return because assignment is finished
-.LReturnCompare:
+	jmp .LReturnCompareSpace //return because assignment is finished
+	
+.LReturnCompareSpace:
 	addq $8, %rsp //stack align
 	ret
 
@@ -121,27 +120,22 @@ isSpace:
 isDigit:
 
 	subq $8, %rsp //stack align
-
 	movq $48, %r10 //move the first digit ascii value to r10
-
 	jmp .Ltop //start the loop
-
 .Ltop:
-	cmp %r10, %rdi //compare digit and input
-	je. LIsDigit //if digit jump to digit
-
-	addq %r10, $1 //increment ascii value by 1 for next digit
-	cmp $57, %r10 //compare to last digit
-	je. LIsNotDigit //jump to not digit if all digits have been compared
-
-	jmp. Ltop//return to beginning of loop
+	cmpq %r10, %rdi //compare digit and input
+	je .LIsDigit //if digit jump to digit
+	addq $1, %r10 //increment ascii value by 1 for next digit
+	cmpq $57, %r10 //compare to last digit
+	je .LIsNotDigit //jump to not digit if all digits have been compared
+	jmp .Ltop//return to beginning of loop
 .LIsDigit:
 	movq $1, %rax //put 1 in return
-	jmp .LReturnCompare//return
+	jmp .LReturnCompareDigit//return
 .LIsNotDigit:
 	movq $0, %rax //put 0 in return
-	jmp .LReturnCompare//return
-.LReturnCompare:	
+	jmp .LReturnCompareDigit//return
+.LReturnCompareDigit:	
 	addq $8, %rsp //stack align
 	ret
 
