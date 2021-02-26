@@ -179,8 +179,6 @@ void testIsDigit(TestObjs *objs) {
 
 void testSkipws(TestObjs *objs) {
 
-	printf("%s\n", skipws("          abc"));//test
-
 	ASSERT(0 == strcmp("abc", skipws("abc")));
 	ASSERT(0 == strcmp("abc", skipws(" abc")));
 	ASSERT(0 == strcmp("abc", skipws("\tabc")));
@@ -190,9 +188,7 @@ void testSkipws(TestObjs *objs) {
 }
 
 void testTokenType(TestObjs *objs) {
-	
-	printf("%c\n", tokenType("2 3 +")); //test
-	
+
 	ASSERT(TOK_INT == tokenType("2 3 +"));
 	ASSERT(TOK_INT == tokenType("123 4 +"));
 	ASSERT(TOK_OP == tokenType("+ 2 3"));

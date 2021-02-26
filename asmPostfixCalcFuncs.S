@@ -123,7 +123,7 @@ isDigit:
 	movq $48, %r10 //move the first digit ascii value to r10
 
 .Ltop:
-	cmpq %r10, %rdi //compare digit and input
+	cmpb %r10b, %dil //compare digit and input
 	je .LIsDigit //if digit jump to digit
 	addq $1, %r10 //increment ascii value by 1 for compared digits
 	cmpq $58, %r10 //compare to 57, the last digit
@@ -204,20 +204,21 @@ tokenType:
 	
 	subq $8, %rsp //align stack
 
-	movq (%rdi), %r10 //move dereferenced parameter to r10
+	movq %rdi, %r9 //move parameter to r9
 
-	movq %r10, %rdi //move dereferenced value to be a parameter
+	movq (%r9), %rdi //move dereferenced value to be a parameter
 	call isDigit //call isdigit using dereferenced char pointer as parameter
 	cmpq $1, %rax //compare returned value and 1
 	je .LDigitToken //jump to digit token
 
-	cmpq $42, %r10 //compare dereferenced value to operators
+	movq (%r9), %r9//move dereferenced r9 into r9
+	cmpb $42, %r9b //compare dereferenced value to operators
 	je .LOpToken //jump to operator token return if it's an operator
-	cmpq $43, %r10
+	cmpb $43, %r9b
 	je .LOpToken
-	cmpq $45, %r10
+	cmpb $45, %r9b
 	je .LOpToken
-	cmpq $47, %r10
+	cmpb $47, %r9b
 	je .LOpToken
 
 	jmp .LUToken //if it hits nothing, then it must be unknown
