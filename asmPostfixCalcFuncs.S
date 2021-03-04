@@ -13,6 +13,14 @@
 
 eNegativeValue: .string "Negative value"
 
+eStackFull: .string "Stack full"
+
+eStackEmpty: .string "Stack empty"
+
+eOpNotReached: .string "Operation not reached"
+
+eDivZero: .string "Divide by zero"
+
 /* TODO: add other string constants and other read-only data here */
 
 	.section .text
@@ -300,7 +308,7 @@ consumeInt:
  */
 	.globl consumeOp
 consumeOp:
-	/*
+	
 	subq $8, %rsp //align stack
 
 	movq (%rdi), %r10 //move dereferenced s output
@@ -309,10 +317,10 @@ consumeOp:
 
 	addq $1, %rdi //increment pointer to next character
 
-	movq %rdi, $rax //return pointer
+	movq %rdi, %rax //return pointer
 
 	addq $8, %rsp //align stack
-*/
+
 
 	ret
 	
@@ -335,7 +343,30 @@ consumeOp:
  */
 	.globl stackPush
 stackPush:
-	/* TODO: implement */
+	
+	subq $8, %rsp //stack align
+
+	cmpq $MAX_STACK, (%rsi) //just checking if we're past 20
+	jl .LPush
+
+.LStackFull:
+
+	movq $eStackFull, %rdi 
+	call fatalError //call fatal error with stack full string
+
+
+.LPush:
+
+	movq (%rsi), %r10  //move dereferenced value away for now
+	leaq (,%r10, 8), %r10 //load stack pointer 
+	
+	addq %r10, %rdi //move stack pointer parameter
+	movq %rdx, (%rdi) //add value to dereferenced pointer on stack
+
+	addq $1, (%rsi) //increment count
+
+	addq $8, %rsp //stack align
+
 	ret
 
 /*
@@ -354,7 +385,29 @@ stackPush:
  */
 	.globl stackPop
 stackPop:
-	/* TODO: implement */
+	
+	subq $8, %rsp //stack align
+
+	cmpq $0, (%rsi) //count can't go below 0
+	jg .LPop
+
+.LStackEmpty:
+
+	movq $eStackEmpty, %rdi
+	call fatalError //call fatal error using stack empty string
+
+.LPop:
+
+	subq $1, (%rsi) //decrement count by 1
+	movq (%rsi), %r10 //move count value away
+
+	leaq (, %r10, 8), %r10 //get count in stack
+	addq %r10, %rdi //move pointer
+
+	movq (%rdi), %rax //move dereferenced pointer to return
+	
+	addq $8, %rsp //stack align
+
 	ret
 
 /*
@@ -370,6 +423,63 @@ stackPop:
  */
 	.globl evalOp
 evalOp:
+
+	subq $8, %rsp //stack align
+
+	cmpq $42, %rdi //just a bunch of compares to see which operation
+	je .LMul
+
+	cmpq $43, %rdi
+	je .LAdd
+
+	cmpq $45, %rdi
+	je .LSub
+
+	cmpq $47, %rdi
+	je .LDiv
+
+	movq $eOpNotReached, %rdi //if not operator somehow, error
+	call fatalError
+
+.LAdd: //these names are self explanatory
+
+	addq %rdx, %rsi 
+	movq %rsi, %rax
+	jmp .LOpFinish
+
+.LSub:
+
+	subq %rdx, %rsi
+	movq %rsi, %rax
+	jmp .LOpFinish
+
+.LMul: //mul and div move second parameter (left), to rax first and then call imul or idiv to divide that value
+
+	movq %rsi, %rax
+	mul %rdx
+	jmp .LOpFinish
+
+.LDiv:
+
+	cmpq $0, %rdx
+	je .LDivZero //if left is zero, error
+
+	movq %rsi, %rdi
+	movq %rdx, %rsi //moving these both one up so i can use cqto
+
+	movq %rdi, %rax
+	cqto
+
+	divq %rsi
+	jmp .LOpFinish
+
+.LDivZero:
+	movq $eDivZero, %rdi
+	call fatalError
+
+.LOpFinish:
+
+	addq $8, %rsp //stack align	
 	ret
 
 /* vim:ft=gas:
