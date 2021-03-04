@@ -256,8 +256,35 @@ tokenType:
  */
 	.globl consumeInt
 consumeInt:
-	/* TODO: implement */
+
+	pushq %rbp //push value of rbp
+	pushq %r12 //need this later
+
+	subq $8, %rsp //align stack
+
+	movq %rsp, %rbp //move rsp to rbp
+
+	movq %rsi, %r12 //move pval away so i can assign a function call to it later
+
+	leaq 0(%rbp), %rsi //pointer to rsi
+
+	movq $10, %rdx //move 10 to third parameter for base 10 call
+
+	call strtol
+
+	movq %rax, (%r12) //assign strtol's return to pval
+
+
+	movq (%rbp), %rax //move the register that was assigned a char* to the return
+
+
+	addq $8, %rsp //align stack
+
+	popq %r12 //get rid of these
+	popq %rbp 
+
 	ret
+
 
 /*
  * consumeOp - consume an operator character from the beginning of the
@@ -273,8 +300,22 @@ consumeInt:
  */
 	.globl consumeOp
 consumeOp:
-	/* TODO: implement */
+	/*
+	subq $8, %rsp //align stack
+
+	movq (%rdi), %r10 //move dereferenced s output
+	
+	movq %r10, (%rsi) //move r10 to value of pointer from rsi second parameter
+
+	addq $1, %rdi //increment pointer to next character
+
+	movq %rdi, $rax //return pointer
+
+	addq $8, %rsp //align stack
+*/
+
 	ret
+	
 
 /*
  * stackPush - push a long (64 bit signed integer) value onto the stack.
