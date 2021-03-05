@@ -265,7 +265,7 @@ tokenType:
 	.globl consumeInt
 consumeInt:
 
-	pushq %rbp //push value of rbp
+	pushq %rbp //push rbp
 	pushq %r12 //need this later
 
 	subq $8, %rsp //align stack
@@ -282,9 +282,7 @@ consumeInt:
 
 	movq %rax, (%r12) //assign strtol's return to pval
 
-
 	movq (%rbp), %rax //move the register that was assigned a char* to the return
-
 
 	addq $8, %rsp //align stack
 
@@ -358,9 +356,9 @@ stackPush:
 .LPush:
 
 	movq (%rsi), %r10  //move dereferenced value away for now
-	leaq (,%r10, 8), %r10 //load stack pointer 
+	leaq (,%r10, 8), %r10 //need this to see where stack pointer is
 	
-	addq %r10, %rdi //move stack pointer parameter
+	addq %r10, %rdi //move stack pointer parameter by previously found value
 	movq %rdx, (%rdi) //add value to dereferenced pointer on stack
 
 	addq $1, (%rsi) //increment count
