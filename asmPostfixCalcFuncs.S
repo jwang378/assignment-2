@@ -309,9 +309,9 @@ consumeOp:
 	
 	subq $8, %rsp //align stack
 
-	movq (%rdi), %r10 //move dereferenced s output
+	movzbl (%rdi), %r10d //move dereferenced s output
 	
-	movq %r10, (%rsi) //move r10 to value of pointer from rsi second parameter
+	movl %r10d, (%rsi) //move r10 to value of pointer from rsi second parameter
 
 	addq $1, %rdi //increment pointer to next character
 
